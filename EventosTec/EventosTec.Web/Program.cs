@@ -24,12 +24,16 @@ namespace EventosTec.Web
 
         private static void RunSeeding(IWebHost host)
         {
-            var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
-            using (var scope = scopeFactory.CreateScope())
+            try
             {
-                var seeder = scope.ServiceProvider.GetService<SeedDb>();
-                seeder.SeedAsync().Wait();
+                var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
+                using (var scope = scopeFactory.CreateScope())
+                {
+                    var seeder = scope.ServiceProvider.GetService<SeedDb>();
+                    seeder.SeedAsync().Wait();
+                }
             }
+            catch { }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

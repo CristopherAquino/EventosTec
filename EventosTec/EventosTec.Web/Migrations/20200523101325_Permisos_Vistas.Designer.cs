@@ -4,14 +4,16 @@ using EventosTec.Web.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EventosTec.Web.Migrations
 {
     [DbContext(typeof(DataDbContext))]
-    partial class DataDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200523101325_Permisos_Vistas")]
+    partial class Permisos_Vistas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,12 +27,10 @@ namespace EventosTec.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(300);
+                    b.Property<string>("Description");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100);
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -89,8 +89,7 @@ namespace EventosTec.Web.Migrations
 
                     b.Property<int>("Duration");
 
-                    b.Property<DateTime?>("EventDate")
-                        .IsRequired();
+                    b.Property<DateTime>("EventDate");
 
                     b.Property<string>("Name")
                         .IsRequired();

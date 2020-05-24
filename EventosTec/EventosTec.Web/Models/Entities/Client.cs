@@ -13,6 +13,10 @@ namespace EventosTec.Web.Models.Entities
         [MaxLength(500)]
         [Display(Name = "Dirección")]
         public string Address { get; set; }
+
         public User User { get; set; }
+
+        public ICollection<Event> Events { get; set; }
+
     }
 }

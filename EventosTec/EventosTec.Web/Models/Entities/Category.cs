@@ -9,12 +9,14 @@ namespace EventosTec.Web.Models.Entities
     public class Category
     {
         public int Id { get; set; }
+        [Display(Name = "Categoría")]
+        [MaxLength(100)]
         [Required]
-
-        [Display(Name = "Categoria")]
         public string Name { get; set; }
-
-        [Display(Name = "Descripcion")]
+        [Display(Name = "Descripción")]
+        [MaxLength(300)]
         public string Description { get; set; }
+
+        public ICollection<Event> Events { get; set; }
     }
 }

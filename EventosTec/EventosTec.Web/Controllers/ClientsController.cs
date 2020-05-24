@@ -11,25 +11,27 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EventosTec.Web.Controllers
 {
-    [Authorize]
-    public class EventsController : Controller
+    [Authorize(Roles = "Admin")]
+    public class ClientsController : Controller
     {
         private readonly DataDbContext _context;
 
-        public EventsController(DataDbContext context)
+        public ClientsController(DataDbContext context)
         {
             _context = context;
         }
 
-        // GET: Events
+        // GET: Clients
         public async Task<IActionResult> Index()
         {
-
-            var dataDbContext = _context.Events.Include(a => @a.City);
-            return View(await dataDbContext.ToListAsync());
+            var clients = await _context.Clients
+                .Include(a => a.Events)
+                .Include(a => a.User)
+               .ToListAsync();
+            return View(clients);
         }
 
-        // GET: Events/Details/5
+        // GET: Clients/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -37,45 +39,39 @@ namespace EventosTec.Web.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Events
-                .Include(a => a.City)
+            var client = await _context.Clients
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (@event == null)
+            if (client == null)
             {
                 return NotFound();
             }
 
-            return View(@event);
+            return View(client);
         }
 
-        // GET: Events/Create
+        // GET: Clients/Create
         public IActionResult Create()
         {
-            var username = User.Identity.Name;
-            var userid = _context.Clients.Where(a => a.User.Email == username).FirstOrDefault();
-            ViewBag.ClientId = userid.Id;
-            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name");
             return View();
         }
 
-        // POST: Events/Create
+        // POST: Clients/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,EventDate,Description,Picture,People,Duration,CityId")] Event @event)
+        public async Task<IActionResult> Create([Bind("Id,Address")] Client client)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(@event);
+                _context.Add(client);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name", @event.CityId);
-            return View(@event);
+            return View(client);
         }
 
-        // GET: Events/Edit/5
+        // GET: Clients/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -83,23 +79,22 @@ namespace EventosTec.Web.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Events.FindAsync(id);
-            if (@event == null)
+            var client = await _context.Clients.FindAsync(id);
+            if (client == null)
             {
                 return NotFound();
             }
-            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name", @event.CityId);
-            return View(@event);
+            return View(client);
         }
 
-        // POST: Events/Edit/5
+        // POST: Clients/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,EventDate,Description,Picture,People,Duration,CityId")] Event @event)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Address")] Client client)
         {
-            if (id != @event.Id)
+            if (id != client.Id)
             {
                 return NotFound();
             }
@@ -108,12 +103,12 @@ namespace EventosTec.Web.Controllers
             {
                 try
                 {
-                    _context.Update(@event);
+                    _context.Update(client);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EventExists(@event.Id))
+                    if (!ClientExists(client.Id))
                     {
                         return NotFound();
                     }
@@ -124,11 +119,10 @@ namespace EventosTec.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name", @event.CityId);
-            return View(@event);
+            return View(client);
         }
 
-        // GET: Events/Delete/5
+        // GET: Clients/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,31 +130,30 @@ namespace EventosTec.Web.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Events
-                .Include(a => a.City)
+            var client = await _context.Clients
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (@event == null)
+            if (client == null)
             {
                 return NotFound();
             }
 
-            return View(@event);
+            return View(client);
         }
 
-        // POST: Events/Delete/5
+        // POST: Clients/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var @event = await _context.Events.FindAsync(id);
-            _context.Events.Remove(@event);
+            var client = await _context.Clients.FindAsync(id);
+            _context.Clients.Remove(client);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EventExists(int id)
+        private bool ClientExists(int id)
         {
-            return _context.Events.Any(e => e.Id == id);
+            return _context.Clients.Any(e => e.Id == id);
         }
     }
 }
