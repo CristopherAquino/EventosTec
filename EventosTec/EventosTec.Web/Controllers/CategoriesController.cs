@@ -24,7 +24,8 @@ namespace EventosTec.Web.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.Include(e => e.Events).ToListAsync());
+            var categories = await _context.Categories.Include(e => e.Events).ToListAsync();
+            return View(categories);
         }
 
         // GET: Categories/Details/5
@@ -35,7 +36,7 @@ namespace EventosTec.Web.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
+            var category = await _context.Categories.Include(a => a.Events)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (category == null)
             {

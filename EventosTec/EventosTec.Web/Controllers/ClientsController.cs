@@ -39,7 +39,7 @@ namespace EventosTec.Web.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Clients
+            var client = await _context.Clients.Include(u => u.User).Include(e => e.Events)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (client == null)
             {
@@ -60,7 +60,7 @@ namespace EventosTec.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Address")] Client client)
+        public async Task<IActionResult> Create(Client client)
         {
             if (ModelState.IsValid)
             {

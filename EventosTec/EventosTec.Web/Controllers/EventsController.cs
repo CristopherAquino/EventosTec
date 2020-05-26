@@ -55,6 +55,7 @@ namespace EventosTec.Web.Controllers
             var userid = _context.Clients.Where(a => a.User.Email == username).FirstOrDefault();
             ViewBag.ClientId = userid.Id;
             ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
@@ -63,7 +64,7 @@ namespace EventosTec.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,EventDate,Description,Picture,People,Duration,CityId")] Event @event)
+        public async Task<IActionResult> Create(Event @event)
         {
             if (ModelState.IsValid)
             {

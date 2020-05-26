@@ -38,8 +38,8 @@ namespace EventosTec.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-services.AddIdentity<User, IdentityRole>(
-                cfg=> {
+            services.AddIdentity<User, IdentityRole>(
+                cfg => {
                     cfg.User.RequireUniqueEmail = true;
                     cfg.Password.RequireDigit = false;
                     cfg.Password.RequiredUniqueChars = 0;
@@ -48,7 +48,7 @@ services.AddIdentity<User, IdentityRole>(
                     cfg.Password.RequireUppercase = false;
                 }).AddEntityFrameworkStores<DataDbContext>();
 
-            services.AddScoped<IUserHelper,UserHelper>();
+            services.AddScoped<IUserHelper, UserHelper>();
             services.AddDbContext<DataDbContext>(cfg =>
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
@@ -74,6 +74,7 @@ services.AddIdentity<User, IdentityRole>(
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>
