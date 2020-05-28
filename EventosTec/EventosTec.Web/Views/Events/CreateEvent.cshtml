@@ -1,10 +1,4 @@
-﻿@model EventosTec.Web.Models.Entities.Event
-
-@{
-	ViewData["Title"] = "CreateEvent";
-}
-
-<h2>Create Event</h2>
+﻿@model EventoTec.web.Models.entities.Event
 
 <h4>Event</h4>
 <hr />
@@ -48,7 +42,7 @@
 			</div>
 			<div class="form-group">
 				<label asp-for="ClientId" class="control-label"></label>
-				<select name="ClienteId" class="form-control">
+				<select asp-for="ClientId" class="form-control">
 					<option>Elige un Cliente</option>
 					@foreach (var item in ViewBag.ClientId)
 					{
