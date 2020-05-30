@@ -13,51 +13,53 @@ namespace EventosTec.Web.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public class CitiesController : ControllerBase
     {
         private readonly DataDbContext _context;
 
-        public CategoriesController(DataDbContext context)
+        public CitiesController(DataDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Categories
+        // GET: api/Cities
         [HttpGet]
-        public IEnumerable<Category> GetCategories()
+        public IEnumerable<City> GetClities()
         {
-            return _context.Categories;
+            return _context.Cities;
         }
 
-        // GET: api/Categories/5
+        // GET: api/Cities/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategory([FromRoute] int id)
+        public async Task<IActionResult> GetCity([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var category = await _context.Categories.Include(a => a.Events)
+            var city = await _context.Cities.Include(a => a.Events)
                 .FirstOrDefaultAsync(a => a.Id == id);
-
-            var response = new CategoryResponse
+            var response = new CityResponse
             {
-                Description = category.Description,
-                Name = category.Name,
-                Id = category.Id,
-                Events = category.Events.Select(p => new EventResponse
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Duration = p.Duration,
-                    EventDate = p.EventDate,
-                    People = p.People,
-                    Description = p.Description,
-                }).ToList(),
+                Description = city.Description,
+                Name = city.Name,
+                Id = city.Id,
+                Slung = city.Slung,
+                Events = city.Events.Select(
+                    p => new EventResponse
+                    {
+                        Description = p.Description,
+                        Name = p.Name,
+                        Id = p.Id,
+                        Duration = p.Duration,
+                        People = p.People,
+                        Picture = p.Picture,
+                        EventDate = p.EventDate
+                    }
+                    ).ToList(),
             };
-
-            if (category == null)
+            if (city == null)
             {
                 return NotFound();
             }
@@ -65,21 +67,21 @@ namespace EventosTec.Web.Controllers.API
             return Ok(response);
         }
 
-        // PUT: api/Categories/5
+        // PUT: api/Cities/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory([FromRoute] int id, [FromBody] Category category)
+        public async Task<IActionResult> PutCity([FromRoute] int id, [FromBody] City city)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != category.Id)
+            if (id != city.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(category).State = EntityState.Modified;
+            _context.Entry(city).State = EntityState.Modified;
 
             try
             {
@@ -87,7 +89,7 @@ namespace EventosTec.Web.Controllers.API
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CategoryExists(id))
+                if (!CityExists(id))
                 {
                     return NotFound();
                 }
@@ -100,45 +102,45 @@ namespace EventosTec.Web.Controllers.API
             return NoContent();
         }
 
-        // POST: api/Categories
+        // POST: api/Cities
         [HttpPost]
-        public async Task<IActionResult> PostCategory([FromBody] Category category)
+        public async Task<IActionResult> PostCity([FromBody] City city)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Categories.Add(category);
+            _context.Cities.Add(city);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+            return CreatedAtAction("GetCity", new { id = city.Id }, city);
         }
 
-        // DELETE: api/Categories/5
+        // DELETE: api/Cities/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory([FromRoute] int id)
+        public async Task<IActionResult> DeleteCity([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
+            var city = await _context.Cities.FindAsync(id);
+            if (city == null)
             {
                 return NotFound();
             }
 
-            _context.Categories.Remove(category);
+            _context.Cities.Remove(city);
             await _context.SaveChangesAsync();
 
-            return Ok(category);
+            return Ok(city);
         }
 
-        private bool CategoryExists(int id)
+        private bool CityExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return _context.Cities.Any(e => e.Id == id);
         }
     }
 }
