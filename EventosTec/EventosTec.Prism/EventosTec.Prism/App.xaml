@@ -5,7 +5,10 @@
              x:Class="EventosTec.Prism.App">
   <Application.Resources>
 
-    <!-- Application resource dictionary -->
+        <ResourceDictionary>
+            <x:String x:Key="UrlAPI">https://192.168.0.12:44359/</x:String>
+        </ResourceDictionary>
 
-  </Application.Resources>
+
+    </Application.Resources>
 </prism:PrismApplication>
